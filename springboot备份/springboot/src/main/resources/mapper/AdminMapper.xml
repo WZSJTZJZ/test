@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace 当前映射文件和哪个接口进行映射-->
+<mapper namespace="com.example.springboot.mapper.AdminMapper">
+<!--    resultMap标签来完成映射规则的定义，主键不可省略-->
+<!--       id属性：标签给这个映射负责分配一个唯一的id值，对应的就是resulMap=“id属性的值”属性的取值-->
+<!--       type属性：取值是一个类，表示的是数据库中的查询结果与Java中哪个实体类进行结果集的映射-->
+    <resultMap id="pageAdmin" type="com.example.springboot.entity.Admin">
+<!--       将表资源和类属性不一致的字段进行匹配指定，名称一致的可以不写-->
+<!--        column="id"表中名称 property="id"类中属性名称-->
+        <result column="id" property="id"></result>
+        <result column="username" property="username"></result>
+        <result column="sex" property="sex"></result>
+        <result column="place" property="place"></result>
+        <result column="school" property="school"></result>
+        <result column="speciality" property="speciality"></result>
+        <result column="education" property="education"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="phone" property="phone"></result>
+        <result column="creat_time" property="creatTime"></result>
+        <result column="role" property="role"></result>
+        <collection property="inductions" javaType="java.util.ArrayList" ofType="com.example.springboot.entity.Induction">
+            <result column="grade" property="grade"></result>
+            <result column="estate" property="estate"></result>
+            <result column="position" property="position"></result>
+            <result column="worker" property="worker"></result>
+            <result column="site" property="site"></result>
+            <result column="company" property="company"></result>
+            <result column="department" property="department"></result>
+            <result column="principal" property="principal"></result>
+            <result column="entry" property="entry"></result>
+            <result column="internship" property="internship"></result>
+            <result column="trial" property="trial"></result>
+            <result column="modify" property="modify"></result>
+            <result column="difference" property="difference"></result>
+            <result column="dimission" property="dimission"></result>
+        </collection>
+    </resultMap>
+<!--     id属性，表示映射的接口中方法的名称-->
+<!--         useGeneratedKeys="true" 开启某个字段的值递增-->
+<!--         keyProperty="id"  一般该值为主键-->
+    <insert id="batchInsert" >
+        INSERT INTO admin (id, username, password, sex, place, school, speciality, education, birthday, phone, creat_time, role) -- 列名根据实际情况修改
+        VALUES
+        <foreach collection="admins" item="admin" separator=",">
+            (#{admin.id}, #{admin.username}, #{admin.password}, #{admin.sex}, #{admin.place}, #{admin.school}, #{admin.speciality}, #{admin.education}, #{admin.birthday}, #{admin.phone}, #{admin.creatTime}, #{admin.role}) -- 属性名根据实际情况修改
+        </foreach>
+    </insert>
+<!--resultMap="pageAdmin"  标签当表的资源和类的对象属性是字段名称不一致时，来定义查询结果集的映射规则-->
+<!--resultType="com.cy......"  表示查询的结果集类型，只需要指定对应映射类的类型，并且包含完整包接口-->
+    <select id="findPage" resultMap="pageAdmin">
+    select admin.*,induction.*  from admin
+    left join induction
+    on admin.id = induction.admin_id
+    <where>
+        <if test="id != null and id != ''">
+            and admin.id like concat('%',#{id},'%')
+        </if>
+        <if test="username != null and username != ''">
+            and admin.username like concat('%',#{username},'%')
+        </if>
+    </where>
+
+
+    </select>
+
+
+</mapper>

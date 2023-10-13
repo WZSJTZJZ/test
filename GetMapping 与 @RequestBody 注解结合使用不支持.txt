@@ -1,0 +1,11 @@
+GetMapping 与 @RequestBody 注解结合使用不支持的原因:
+
+
+正常情况下使用 GetMapping 查询数据是没有问题
+
+问题是 GetMapping 与 @RequestBody 注解结合使用是不支持的
+
+由于 GET 的参数是通过 Url 方式传递的，而不是请求体传递的所以无法通过 @RequestBody 注解来接收。
+
+
+注意：POST是前端传送有Body（例如form）使用，GET没有Body，只能传一些id啥简单的。
